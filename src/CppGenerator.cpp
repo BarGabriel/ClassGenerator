@@ -160,7 +160,7 @@ std::string CppGenerator::generateConstructor() const
 			memberType = getType(*membersIt++);
 			memberName = *membersIt++;
 
-			constructor << "\t_" + memberName + " = " + memberName + "\n";
+			constructor << "\t_" + memberName + " = " + memberName + ";\n";
 		}
 		constructor << "}\n\n";
 	}
@@ -172,7 +172,7 @@ std::string CppGenerator::generateSet(const std::string& memberName, const std::
 {
 	std::stringstream setFunc;
 	setFunc << "void " + _className + "::set_" + memberName + "(" + returnType + " value" + ")\n{\n";
-	setFunc << "\t" + memberName + " = " + "value;\n}\n\n";
+	setFunc << "\t_" + memberName + " = " + "value;\n}\n\n";
 	return setFunc.str();
 }
 
@@ -180,6 +180,6 @@ std::string CppGenerator::generateGet(const std::string& memberName, const std::
 {
 	std::stringstream getFunc;
 	getFunc << returnType + SPACE + _className + "::get_" + memberName + "() const\n{\n";
-	getFunc << "\treturn " + memberName + ";\n}\n\n";
+	getFunc << "\treturn _" + memberName + ";\n}\n\n";
 	return getFunc.str();
 }
