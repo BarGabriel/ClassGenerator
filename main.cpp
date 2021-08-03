@@ -10,13 +10,15 @@ int main(int argc, char** argv)
 	std::string name = result[Options::NAME_OPTION].as<std::string>();
 
 	GeneratorFactory generatorFactory;
-	std::unique_ptr<Generator> generator = generatorFactory.getGenerator(lang);
+	std::unique_ptr<Generator> generator = generatorFactory.getGenerator(std::move(lang));
 
-	generator->setClassName(name);
+	generator->setClassName(std::move(name));
 
 	if (result.count(Options::PRIVATE_OPTION))
 	{
-		generator->setPrivateMembers(result[Options::PRIVATE_OPTION].as<std::vector<std::string>>());
+		auto privateMembers = result[Options::PRIVATE_OPTION].as<std::vector<std::string>>();
+		generator->validatePrivateMembers(privateMembers);
+		generator->setPrivateMembers(privateMembers);
 	}
 
 	generator->generate();

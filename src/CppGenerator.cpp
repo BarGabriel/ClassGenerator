@@ -21,7 +21,25 @@ void CppGenerator::initTypes()
 	_types.emplace(std::pair<std::string, std::string>("d", "double"));
 }
 
-void CppGenerator::generateHeader()
+void CppGenerator::validatePrivateMembers(std::vector<std::string> members) const
+{
+	Generator::validatePrivateMembers(members);
+	if (members.size() % 2)
+	{
+		std::cerr << "Invalid private members" << std::endl;
+		exit(0);
+	}
+	for (auto it = members.cbegin(); it != members.cend(); it += 2)
+	{
+		if (*it != STRING_TYPE && *it != INTEGER_TYPE)
+		{
+			std::cerr << "Invalid type. type: " << *it << std::endl;
+			exit(0);
+		}
+	}
+}
+
+void CppGenerator::generateHeader() const
 {
 	std::ofstream headerFile;
 	headerFile.open(_className + ".hpp");
@@ -31,7 +49,6 @@ void CppGenerator::generateHeader()
 	headerFile << "#define " + upperClassName + "_HPP\n\n";
 
 	headerFile << "#include <iostream>\n\n";
-
 
 	headerFile << "class " + _className + "\n";
 	headerFile << "{\n";
@@ -47,13 +64,13 @@ void CppGenerator::generateHeader()
 		headerFile << "\t" + _className + "(";
 
 		std::string membersType, memberName;
-		auto membersIt = _privateMembers.begin();
-		while (membersIt != _privateMembers.end())
+		auto membersIt = _privateMembers.cbegin();
+		while (membersIt != _privateMembers.cend())
 		{
 			membersType = getType(*membersIt++);
 			memberName = *membersIt++;
 			headerFile << membersType + SPACE + memberName;
-			if (membersIt != _privateMembers.end())
+			if (membersIt != _privateMembers.cend())
 			{
 				headerFile << ", ";
 			}
@@ -62,8 +79,8 @@ void CppGenerator::generateHeader()
 
 
 		// Declare getters & setters for privete members
-		membersIt = _privateMembers.begin();
-		while (membersIt != _privateMembers.end())
+		membersIt = _privateMembers.cbegin();
+		while (membersIt != _privateMembers.cend())
 		{
 			membersType = getType(*membersIt++);
 			memberName = *membersIt++;
@@ -74,8 +91,8 @@ void CppGenerator::generateHeader()
 
 		// Declare private members
 		headerFile << "\nprivate:\n";
-		membersIt = _privateMembers.begin();
-		while (membersIt != _privateMembers.end())
+		membersIt = _privateMembers.cbegin();
+		while (membersIt != _privateMembers.cend())
 		{
 			membersType = getType(*membersIt++);
 			memberName = *membersIt++;
@@ -83,14 +100,13 @@ void CppGenerator::generateHeader()
 		}
 	}
 
-
 	headerFile << "};\n\n";
 	headerFile << "#endif\n";
 
 	headerFile.close();
 }
 
-void CppGenerator::generateSource()
+void CppGenerator::generateSource() const
 {
 	std::ofstream sourceFile;
 	sourceFile.open(_className + ".cpp");
@@ -101,15 +117,14 @@ void CppGenerator::generateSource()
 	{
 		// Getters & Setters
 		std::string memberType, memberName;
-		auto membersIt = _privateMembers.begin();
-		while (membersIt != _privateMembers.end())
+		auto membersIt = _privateMembers.cbegin();
+		while (membersIt != _privateMembers.cend())
 		{
 			memberType = getType(*membersIt++);
 			memberName = *membersIt++;
 
 			sourceFile << generateSet(memberName, memberType);
 			sourceFile << generateGet(memberName, memberType);
-
 		}
 	}
 
@@ -118,14 +133,7 @@ void CppGenerator::generateSource()
 
 std::string CppGenerator::getType(const std::string& memberType) const
 {
-	try
-	{
-		return _types.find(memberType)->second;
-	}
-	catch (const std::exception&)
-	{
-		throw std::runtime_error("Error type for private member.");
-	}
+	return _types.find(memberType)->second;
 }
 
 std::string CppGenerator::generateConstructor() const

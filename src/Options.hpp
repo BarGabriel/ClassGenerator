@@ -28,8 +28,4 @@ private:
 	cxxopts::Options _options;
 };
 
-
-
-
-
 #endif

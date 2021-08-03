@@ -17,10 +17,13 @@ public:
 private:
 
 	static constexpr auto SPACE = " ";
+	static constexpr auto STRING_TYPE = "s";
+	static constexpr auto INTEGER_TYPE = "i";
 
 	void initTypes();
-	void generateHeader();
-	void generateSource();
+	void validatePrivateMembers(std::vector<std::string> members) const override;
+	void generateHeader() const;
+	void generateSource() const;
 	std::string getType(const std::string& memberType) const;
 	std::string generateConstructor() const override;
 	std::string generateSet(const std::string& memberName, const std::string& returnType = "") const override;

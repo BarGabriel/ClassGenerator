@@ -3,11 +3,6 @@
 #include <fstream>
 #include <sstream>
 
-PythonGenerator::PythonGenerator() 
-{
-
-}
-
 void PythonGenerator::generate()
 {
 	std::ofstream file;
