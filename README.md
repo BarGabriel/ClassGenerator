@@ -5,10 +5,10 @@ An application for generate C++ & python classes.
 
 # Features
 
+ - Generates getters & setters for private members.
  - Time-saver (especially with big classes).
  - Easy to use.
  - Cross-platform (linux and windows).
- - Generates getters & setters for private members.
 
   
 # Building
