@@ -11,7 +11,7 @@ An application for generate C++ & python classes.
  - Cross-platform (linux and windows).
 
   
-# Building
+# Build
 
 #### Linux
 
